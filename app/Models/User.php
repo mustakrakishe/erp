@@ -2,46 +2,54 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory,
+        HasApiTokens;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
+    public const ROLE_ROOT     = 'root';
+    public const ROLE_ADMIN    = 'admin';
+    public const ROLE_TEAMLEAD = 'teamlead';
+    public const ROLE_BUYER    = 'buyer';
+
+    public const ROLES_ALL = [
+        self::ROLE_ROOT,
+        self::ROLE_ADMIN,
+        self::ROLE_TEAMLEAD,
+        self::ROLE_BUYER,
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
+    protected $fillable = [
+        'login',
+        'password',
+        'role',
+        'superior_id',
+    ];
+
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function superior(): BelongsTo
+    {
+        return $this->belongsTo(static::class);
+    }
+
+    public function subordinates(): HasMany
+    {
+        return $this->hasMany(static::class, 'superior_id');
     }
 }

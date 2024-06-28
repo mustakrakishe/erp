@@ -137,3 +137,48 @@ paths:
           $ref: '#/components/responses/204'
         '401':
           $ref: '#/components/responses/401'
+  /api/users:
+    post:
+      tags:
+        - Users
+      summary: Create User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                login:
+                  type: string
+                  maximum: 255
+                  example: user
+                password:
+                  type: string
+                  minimum: 8
+                  maximum: 255
+                  format: password
+                  example: password
+                superior_id:
+                  type: integer
+                  example: 1
+              required:
+                - login
+                - password
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/user'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '422':
+          $ref: '#/components/responses/422'
+

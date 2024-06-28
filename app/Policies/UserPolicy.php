@@ -35,4 +35,20 @@ class UserPolicy
         return $user->is($userToSee)
             || $this->userService->containsInSubordinateTree($user, $userToSee);
     }
+
+    public function update(User $user, User $userToUpdate): bool
+    {
+        $hasRightRole = in_array($user->role, [
+            User::ROLE_ROOT,
+            User::ROLE_ADMIN,
+            User::ROLE_TEAMLEAD,
+        ]);
+
+        if (!$hasRightRole) {
+            return false;
+        }
+
+        return $user->is($userToUpdate)
+            || $this->userService->containsInSubordinateTree($user, $userToUpdate);
+    }
 }

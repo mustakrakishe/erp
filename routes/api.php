@@ -14,4 +14,5 @@ Route::prefix('users')->middleware('auth:sanctum')->group(function () {
     Route::post('', [UserController::class, 'create'])->can('create', User::class);
     Route::get('{user}', [UserController::class, 'show'])->can('see', 'user');
     Route::patch('{user}', [UserController::class, 'update'])->can('update', 'user');
+    Route::delete('{user}', [UserController::class, 'delete'])->can('delete', 'user');
 });

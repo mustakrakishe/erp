@@ -31,4 +31,11 @@ class UserController
 
         return (new UserResource($user))->response();
     }
+
+    public function delete(User $user): JsonResponse
+    {
+        $user->delete();
+
+        return response()->json([], Response::HTTP_NO_CONTENT);
+    }
 }

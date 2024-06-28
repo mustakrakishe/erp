@@ -27,6 +27,32 @@ components:
         slug:
           summary: Slug
           value: 'me'
+    superior_id:
+      in: query
+      name: superior_id
+      description: Superior id
+      schema:
+        type: integer
+        default: acting user id
+        example: 1
+    perPage:
+      in: query
+      name: per_page
+      description: Number of items per pagination page
+      schema:
+        type: integer
+        minimum: 1
+        default: 15
+        example: 2
+    page:
+      in: query
+      name: page
+      description: Number of pagination page
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+        example: 1
   schemas:
     user:
       type: object
@@ -50,6 +76,29 @@ components:
         updated_at:
           type: string
           example: 2024-01-01 00:00:00
+    pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 6
+        from:
+          type: integer
+          nullable: true
+          example: 3
+        to:
+          type: integer
+          nullable: true
+          example: 4
+        per_page:
+          type: integer
+          example: 2
+        current_page:
+          type: integer
+          example: 2
+        last_page:
+          type: integer
+          example: 3
   responses:
     '204':
       description: No Content
@@ -165,6 +214,34 @@ paths:
         '401':
           $ref: '#/components/responses/401'
   /api/users:
+    get:
+      tags:
+        - Users
+      summary: Index Users
+      parameters:
+        - $ref: '#/components/parameters/superior_id'
+        - $ref: '#/components/parameters/perPage'
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/user'
+                  meta:
+                    $ref: '#/components/schemas/pagination'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
     post:
       tags:
         - Users

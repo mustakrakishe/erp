@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\User\CreateUserRequest;
+use App\Http\Requests\User\IndexUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -11,6 +13,19 @@ use Illuminate\Http\Response;
 
 class UserController
 {
+    public function index(IndexUserRequest $request): JsonResponse
+    {
+        $subordinates = User::where(
+            'superior_id',
+            $request->validated('superior_id')
+        )->paginate(
+            perPage: $request->validated('per_page'),
+            page: $request->validated('page'),
+        );
+
+        return (new UserCollection($subordinates))->response();
+    }
+
     public function create(CreateUserRequest $request): JsonResponse
     {
         $user = User::create($request->input());

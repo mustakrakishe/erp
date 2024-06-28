@@ -3,9 +3,15 @@
 namespace App\Policies;
 
 use App\Models\User;
+use App\Services\UserService;
 
 class UserPolicy
 {
+    public function __construct(
+        protected readonly UserService $userService,
+    ) {
+    }
+
     public function create(User $user): bool
     {
         return in_array($user->role, [
@@ -22,5 +28,11 @@ class UserPolicy
             User::ROLE_ADMIN,
             User::ROLE_TEAMLEAD,
         ]);
+    }
+
+    public function see(User $user, User $userToSee): bool
+    {
+        return $user->is($userToSee)
+            || $this->userService->containsInSubordinateTree($user, $userToSee);
     }
 }

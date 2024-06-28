@@ -10,6 +10,23 @@ components:
       type: http
       scheme: bearer
       description: Personal access token authorization
+  parameters:
+    user:
+      in: path
+      name: user
+      description: User id or slug
+      required: true
+      schema:
+        oneOf:
+          - type: integer
+          - type: string
+      examples:
+        id:
+          summary: Id
+          value: 1
+        slug:
+          summary: Slug
+          value: 'me'
   schemas:
     user:
       type: object
@@ -48,6 +65,16 @@ components:
                 example: Error message
     '403':
       description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Error message
+    '404':
+      description: Not Found
       content:
         application/json:
           schema:
@@ -181,4 +208,26 @@ paths:
           $ref: '#/components/responses/403'
         '422':
           $ref: '#/components/responses/422'
-
+  /api/users/{user}:
+    get:
+      tags:
+        - Users
+      summary: Show User
+      parameters:
+        - $ref: '#/components/parameters/user'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/user'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'

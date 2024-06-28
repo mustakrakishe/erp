@@ -18,4 +18,9 @@ class UserController
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
+
+    public function show(User $user): JsonResponse
+    {
+        return (new UserResource($user))->response();
+    }
 }

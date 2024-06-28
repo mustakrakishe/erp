@@ -5,6 +5,11 @@ info:
   version: 1.0.0
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Personal access token authorization
   schemas:
     user:
       type: object
@@ -29,6 +34,8 @@ components:
           type: string
           example: 2024-01-01 00:00:00
   responses:
+    '204':
+      description: No Content
     '401':
       description: Unauthorized
       content:
@@ -68,12 +75,16 @@ components:
                       type: string
                       example: Error message
 
+security:
+ - bearerAuth: []
+
 paths:
   /api/auth/sign-in:
     post:
       tags:
         - Auth
       summary: Sign in
+      security: []
       requestBody:
         required: true
         content:
@@ -116,3 +127,13 @@ paths:
           $ref: '#/components/responses/403'
         '422':
           $ref: '#/components/responses/422'
+  /api/auth/sign-out:
+    post:
+      tags:
+        - Auth
+      summary: Sign out
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '401':
+          $ref: '#/components/responses/401'

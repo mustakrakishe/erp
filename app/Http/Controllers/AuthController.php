@@ -7,6 +7,8 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController
@@ -25,5 +27,12 @@ class AuthController
                 'token' => $user->createToken('On Sign In')->plainTextToken,
             ],
         ]);
+    }
+
+    public function signOut(Request $request): JsonResponse
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([], Response::HTTP_NO_CONTENT);
     }
 }

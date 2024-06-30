@@ -33,4 +33,9 @@ class ProductController extends Controller
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
+
+    public function show(Product $product): JsonResponse
+    {
+        return (new ProductResource($product))->response();
+    }
 }

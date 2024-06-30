@@ -27,6 +27,14 @@ components:
         slug:
           summary: Slug
           value: 'me'
+    product:
+      in: path
+      name: product
+      description: Product id
+      required: true
+      schema:
+        type: integer
+        example: 1
     superior_id:
       in: query
       name: superior_id
@@ -468,3 +476,26 @@ paths:
           $ref: '#/components/responses/403'
         '422':
           $ref: '#/components/responses/422'
+  /api/products/{product}:
+    get:
+      tags:
+        - Products
+      summary: Show Product
+      parameters:
+        - $ref: '#/components/parameters/product'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/product'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'

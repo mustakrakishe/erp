@@ -499,3 +499,45 @@ paths:
           $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/404'
+    patch:
+      tags:
+        - Products
+      summary: Update Product
+      parameters:
+        - $ref: '#/components/parameters/product'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  maximum: 255
+                  example: Updated Product
+                description:
+                  type: string
+                  maximum: 255
+                  example: Updated Product Description
+                price:
+                  type: number
+                  minimum: 0
+                  maximum: 999999.99
+                  example: 88.88
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/product'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'

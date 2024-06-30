@@ -28,4 +28,10 @@ class ProductPolicy
         return $user->id === $product->owner_id
             || $this->userService->containsInSubordinateTree($user, $product->owner);
     }
+
+    public function update(User $user, Product $product): bool
+    {
+        return $user->role === User::ROLE_BUYER
+            && $user->id === $product->owner_id;
+    }
 }

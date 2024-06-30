@@ -5,15 +5,17 @@ use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('auth')->group(function () {
-    Route::post('sign-in', [AuthController::class, 'signIn'])->middleware('guest:sanctum');
-    Route::post('sign-out', [AuthController::class, 'signOut'])->middleware('auth:sanctum');
+Route::prefix('auth')->controller(AuthController::class)->group(function () {
+    Route::post('sign-in', 'signIn')->middleware('guest:sanctum');
+    Route::post('sign-out', 'signOut')->middleware('auth:sanctum');
 });
 
-Route::prefix('users')->middleware('auth:sanctum')->group(function () {
-    Route::get('', [UserController::class, 'index']);
-    Route::post('', [UserController::class, 'create'])->can('create', User::class);
-    Route::get('{user}', [UserController::class, 'show'])->can('see', 'user');
-    Route::patch('{user}', [UserController::class, 'update'])->can('update', 'user');
-    Route::delete('{user}', [UserController::class, 'delete'])->can('delete', 'user');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('users')->controller(UserController::class)->group(function () {
+        Route::get('', 'index');
+        Route::post('', 'create')->can('create', User::class);
+        Route::get('{user}', 'show')->can('see', 'user');
+        Route::patch('{user}', 'update')->can('update', 'user');
+        Route::delete('{user}', 'delete')->can('delete', 'user');
+    });
 });

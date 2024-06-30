@@ -35,6 +35,14 @@ components:
         type: integer
         default: acting user id
         example: 1
+    owner_id:
+      in: query
+      name: owner_id
+      description: Owner id
+      schema:
+        type: integer
+        default: acting user id
+        example: 1
     perPage:
       in: query
       name: per_page
@@ -70,6 +78,30 @@ components:
           type: integer
           nullable: true
           example: 2
+        created_at:
+          type: string
+          example: 2024-01-01 00:00:00
+        updated_at:
+          type: string
+          example: 2024-01-01 00:00:00
+    product:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: New Product
+        description:
+          type: string
+          example: New Product Description
+        price:
+          type: number
+          example: 99.99
+        owner_id:
+          type: integer
+          example: 1
         created_at:
           type: string
           example: 2024-01-01 00:00:00
@@ -365,3 +397,32 @@ paths:
           $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/404'
+  /api/products:
+    get:
+      tags:
+        - Products
+      summary: Index Products
+      parameters:
+        - $ref: '#/components/parameters/owner_id'
+        - $ref: '#/components/parameters/perPage'
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/product'
+                  meta:
+                    $ref: '#/components/schemas/pagination'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'

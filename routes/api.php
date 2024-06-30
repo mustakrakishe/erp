@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -17,5 +18,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('{user}', 'show')->can('see', 'user');
         Route::patch('{user}', 'update')->can('update', 'user');
         Route::delete('{user}', 'delete')->can('delete', 'user');
+    });
+
+    Route::prefix('products')->controller(ProductController::class)->group(function () {
+        Route::get('', 'index');
     });
 });

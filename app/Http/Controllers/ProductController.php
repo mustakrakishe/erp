@@ -46,4 +46,11 @@ class ProductController extends Controller
 
         return (new ProductResource($product))->response();
     }
+
+    public function delete(Product $product): JsonResponse
+    {
+        $product->delete();
+
+        return response()->json([], Response::HTTP_NO_CONTENT);
+    }
 }

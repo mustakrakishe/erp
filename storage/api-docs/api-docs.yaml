@@ -541,3 +541,18 @@ paths:
           $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/404'
+    delete:
+      tags:
+        - Products
+      summary: Delete Product
+      parameters:
+        - $ref: '#/components/parameters/product'
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'

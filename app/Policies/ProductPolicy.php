@@ -34,4 +34,10 @@ class ProductPolicy
         return $user->role === User::ROLE_BUYER
             && $user->id === $product->owner_id;
     }
+
+    public function delete(User $user, Product $product): bool
+    {
+        return $user->role === User::ROLE_BUYER
+            && $user->id === $product->owner_id;
+    }
 }

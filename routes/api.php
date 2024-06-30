@@ -26,5 +26,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('', 'create')->can('create', Product::class);
         Route::get('{product}', 'show')->can('see', 'product');
         Route::patch('{product}', 'update')->can('update', 'product');
+        Route::delete('{product}', 'delete')->can('delete', 'product');
     });
 });

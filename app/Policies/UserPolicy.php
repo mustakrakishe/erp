@@ -65,6 +65,7 @@ class UserPolicy
         }
 
         return $this->userService->containsInSubordinateTree($user, $userToDelete)
-            && $userToDelete->subordinates()->doesntExist();
+            && $userToDelete->subordinates()->doesntExist()
+            && $userToDelete->products()->doesntExist();
     }
 }

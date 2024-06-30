@@ -61,7 +61,10 @@ class UpdateUserRequest extends FormRequest
                     }
                 },
                 function (string $attribute, mixed $value, Closure $fail): void {
-                    if ($this->route('user')->subordinates()->doesntExist()) {
+                    if (
+                        $this->route('user')->subordinates()->doesntExist() &&
+                        $this->route('user')->products()->doesntExist()
+                    ) {
                         return;
                     }
 

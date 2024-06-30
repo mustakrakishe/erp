@@ -426,3 +426,45 @@ paths:
           $ref: '#/components/responses/404'
         '422':
           $ref: '#/components/responses/422'
+    post:
+      tags:
+        - Products
+      summary: Create Product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  maximum: 255
+                  example: New Product
+                description:
+                  type: string
+                  maximum: 255
+                  example: New Product Description
+                price:
+                  type: number
+                  maximum: 999999.99
+                  example: 99.99
+              required:
+                - title
+                - price
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/product'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '422':
+          $ref: '#/components/responses/422'

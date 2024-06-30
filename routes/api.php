@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -22,5 +23,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('products')->controller(ProductController::class)->group(function () {
         Route::get('', 'index');
+        Route::post('', 'create')->can('create', Product::class);
     });
 });

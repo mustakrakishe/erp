@@ -10,4 +10,9 @@ class ProductPolicy
     {
         return $user->role === User::ROLE_BUYER;
     }
+
+    public function create(User $user): bool
+    {
+        return $user->role === User::ROLE_BUYER;
+    }
 }

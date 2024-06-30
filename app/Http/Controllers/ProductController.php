@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Product\CreateProductRequest;
 use App\Http\Requests\Product\IndexProductRequest;
 use App\Http\Resources\ProductCollection;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class ProductController extends Controller
 {
@@ -20,5 +23,14 @@ class ProductController extends Controller
         );
 
         return (new ProductCollection($products))->response();
+    }
+
+    public function create(CreateProductRequest $request): JsonResponse
+    {
+        $product = Product::create($request->input());
+
+        return (new ProductResource($product))
+            ->response()
+            ->setStatusCode(Response::HTTP_CREATED);
     }
 }

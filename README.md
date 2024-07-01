@@ -1,66 +1,445 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ERP
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+ERP for user and product management with REST API
 
-## About Laravel
+## Description
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The application allows to authorize, manage users and products via REST API.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Only two entities are used:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. User:
+- id;
+- login;
+- password;
+- role;
+- superior_id.
 
-## Learning Laravel
+2. Product:
+- id;
+- title;
+- description;
+- price;
+- owner_id.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+There are 4 subordinate user roles:
+1. root - the first autocreated user in system on setup. It allows to start create other users. Can manage all users and see all products.
+2. admin - can manage subordinate role users and see their products.
+3. teamlead - can manage subordinate role users and see their products.
+4. buyer - can manage his own products.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Tech stack
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+The application is developed with [Laravel 11](https://laravel.com/) framework and comes with [Docker](https://www.docker.com/) environment (compose v2).
 
-## Laravel Sponsors
+## Install
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. Clone this repository to your project directory:
+```
+git clone git@github.com:mustakrakishe/erp erp
+```
 
-### Premium Partners
+2. Go to created directory:
+```
+cd erp
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+3. Create an .env file:
+```
+cp .env.example .env
+```
 
-## Contributing
+4. The .env already contains all requires preset values to start the application with Docker. However, you are free to change them.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+5. Up the docker environment:
+```
+docker compose up -d
+```
 
-## Code of Conduct
+6. Enter to the php container:
+```
+docker compose exec php /bin/bash
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+7. install composer dependencies:
+```
+composer install
+```
 
-## Security Vulnerabilities
+8. Run migrations with a ```--seed``` option:
+```
+php artisan migrate --seed
+```
+This default seeder creates the first user, that will allow you to start create other users:
+```
+login:       root
+password:    password
+role:        root
+superior_id: null
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+> It is required to run default seeder as it is the only way to have possibility to start to create users, except manually creating in db.
 
-## License
+If you already run migrations without ```--seed``` option, you can do it futher:
+```
+php artisan db:seed
+```
+Also, you may add test data with:
+```
+php artisan db:seed TestDataSeeder
+```
+It will create the following data structure:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- admin_1
+  - teamlead_1_1
+    - buyer_1_1_1
+      - random_product_name
+      - random_product_name
+    - buyer_1_1_2
+      - random_product_name
+      - random_product_name
+  - teamlead_1_2
+    - buyer_1_2_1
+      - random_product_name
+      - random_product_name
+    - buyer_1_2_2
+      - random_product_name
+      - random_product_name
+- admin_2
+  - teamlead_2_1
+    - buyer_2_1_1
+      - random_product_name
+      - random_product_name
+    - buyer_2_1_2
+      - random_product_name
+      - random_product_name
+  - teamlead_2_2
+    - buyer_2_2_1
+      - random_product_name
+      - random_product_name
+    - buyer_2_2_2
+      - random_product_name
+      - random_product_name
+
+All users have a "password" as a password.
+
+9. Create an app secret key:
+```
+php artisan key:generate
+```
+
+10. Change ```storage``` directory owner to ```www-data```:
+```
+chown -R www-data:www-data storage
+```
+Done.
+
+## Usage
+
+Service REST API is available now at http://localhost/api.
+
+Swagger OpenAPI documentation at http://localhost/api/documentation.
+
+## API usage examples
+
+### Auth - Sign in
+```
+// Request
+
+[POST] /api/auth/sign-in
+{
+  "login": "root",
+  "password": "password"
+}
+
+// Response
+
+200: OK
+{
+  "data": {
+    "user": {
+      "id": 1,
+      "login": "root",
+      "role": "root",
+      "superior_id": null,
+      "created_at": "2024-01-01 00:00:00",
+      "updated_at": "2024-01-01 00:00:00"
+    },
+    "token": "1|YNvY0AOVay35lpOWvoDUl97m74uQnx4RvOMv4uUh8bea40ff"
+  }
+}
+```
+
+### Auth - Sign out
+
+```
+// Reuqest
+
+[POST] /api/auth/sign-out
+
+// Response
+
+204: No Content
+```
+
+### Users - Index Users
+
+```
+// Request
+
+[GET] /api/users?superior_id=2&per_page=2&page=1
+
+
+// Response
+
+200: OK
+{
+  "data": [
+    {
+      "id": 3,
+      "login": "teamlead_1_1",
+      "role": "teamlead",
+      "superior_id": 2,
+      "created_at": "2024-01-01 00:00:00",
+      "updated_at": "2024-01-01 00:00:00"
+    },
+    {
+      "id": 6,
+      "login": "teamlead_1_2",
+      "role": "teamlead",
+      "superior_id": 2,
+      "created_at": "2024-01-01 00:00:00",
+      "updated_at": "2024-01-01 00:00:00"
+    }
+  ],
+  "meta": {
+    "total": 2,
+    "from": 1,
+    "to": 2,
+    "per_page": 2,
+    "current_page": 1,
+    "last_page": 1
+  }
+}
+```
+
+### Users - Create User
+
+```
+// Request
+
+[POST] /api/users
+{
+  "login": "user",
+  "password": "password",
+  "superior_id": 2
+}
+
+// Response
+
+201: Created
+{
+  "data": {
+    "id": 16,
+    "login": "user",
+    "role": "teamlead",
+    "superior_id": 2,
+    "created_at": "2024-01-01 00:00:00",
+    "updated_at": "2024-01-01 00:00:00"
+  }
+}
+```
+
+### Users - Show User
+
+```
+// Request
+
+[GET] /api/users/16
+
+// Response
+
+200: OK
+{
+  "data": {
+    "id": 16,
+    "login": "user",
+    "role": "teamlead",
+    "superior_id": 2,
+    "created_at": "2024-01-01 00:00:00",
+    "updated_at": "2024-01-01 00:00:00"
+  }
+}
+```
+
+### Users - Update User
+
+```
+// Request
+
+[PATCH] /api/users/16
+{
+  "login": "updated_user",
+  "password": "updated_password",
+  "superior_id": 1
+}
+
+// Response
+
+200: OK
+{
+  "data": {
+    "id": 16,
+    "login": "updated_user",
+    "role": "admin",
+    "superior_id": 1,
+    "created_at": "2024-01-01 00:00:00",
+    "updated_at": "2024-01-01 00:00:00"
+  }
+}
+```
+
+### Users - Delete User
+
+```
+// Request
+
+[POST] /api/users/16
+
+// Response
+
+204: No Content
+```
+
+### Products - Index Products
+
+```
+// Request
+
+[GET] api/products?owner_id=4&per_page=2&page=1
+
+// Response
+
+200: OK
+{
+  "data": [
+    {
+      "id": 1,
+      "title": "vitae",
+      "description": "Provident dolores exercitationem quasi ipsa quia rerum.",
+      "price": 24.3,
+      "owner_id": 4,
+      "created_at": "2024-01-01 00:00:00",
+      "updated_at": "2024-01-01 00:00:00"
+    },
+    {
+      "id": 2,
+      "title": "culpa",
+      "description": "Ullam aut ab id ut.",
+      "price": 45.85,
+      "owner_id": 4,
+      "created_at": "2024-01-01 00:00:00",
+      "updated_at": "2024-01-01 00:00:00"
+    }
+  ],
+  "meta": {
+    "total": 2,
+    "from": 1,
+    "to": 2,
+    "per_page": 2,
+    "current_page": 1,
+    "last_page": 1
+  }
+}
+```
+
+### Products - Create Product
+
+```
+// Request
+
+[POST] /api/products
+{
+  "title": "New Product",
+  "description": "New Product Description",
+  "price": 99.99
+}
+
+// Response
+
+201: Created
+{
+  "data": {
+    "id": 17,
+    "title": "New Product",
+    "description": "New Product Description",
+    "price": 99.99,
+    "owner_id": 4,
+    "created_at": "2024-01-01 00:00:00",
+    "updated_at": "2024-01-01 00:00:00"
+  }
+}
+```
+
+### Products - Show Product
+
+```
+// Request
+
+[GET] /api/products/17
+
+// Response
+
+200: OK
+{
+  "data": {
+    "id": 17,
+    "title": "New Product",
+    "description": "New Product Description",
+    "price": 99.99,
+    "owner_id": 4,
+    "created_at": "2024-01-01 00:00:00",
+    "updated_at": "2024-01-01 00:00:00"
+  }
+}
+```
+
+### Products - Update Product
+
+```
+// Request
+
+[PATCH] /api/products/17
+{
+  "title": "Updated Product",
+  "description": "Updated Product Description",
+  "price": 88.88
+}
+
+// Response
+
+200: OK
+{
+  "data": {
+    "id": 17,
+    "title": "Updated Product",
+    "description": "Updated Product Description",
+    "price": 88.88,
+    "owner_id": 4,
+    "created_at": "2024-01-01 00:00:00",
+    "updated_at": "2024-01-01 00:00:00"
+  }
+}
+```
+
+### Products - Delete Product
+
+```
+// Request
+
+[DELETE] /api/products/17
+
+// Response
+
+204: No Content
+```
